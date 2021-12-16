@@ -8,10 +8,13 @@ def main():
         default=False)
     parser.add_argument("-p", "--plot", action='store_true', help="whether to show plots or not",
         default=False)
+    parser.add_argument("--parallel", action='store_true', help="whether to perform in parallel or not",
+        default=False)
     args = parser.parse_args()
 
 
     par = Params()
+    print(args.parallel)
 
     # Define iteration string
     iter_str = 'i5'
@@ -92,7 +95,7 @@ def main():
         bounds = boundaries.Boundaries(b_rates, par.n_params)
 
         opt = pints.OptimisationController(LL, x0, boundaries=bounds, method=pints.CMAES) 
-        opt.set_parallel(True)
+        opt.set_parallel(args.parallel)
         opt.set_log_to_file(txt_folder + 'CMAES_' + iter_str + '.txt')
 
         # Run optimisation

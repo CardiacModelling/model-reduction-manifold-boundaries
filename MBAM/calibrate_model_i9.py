@@ -8,6 +8,8 @@ def main():
         default=False)
     parser.add_argument("-p", "--plot", action='store_true', help="whether to show plots or not",
         default=False)
+    parser.add_argument("--parallel", action='store_true', help="whether to perform in parallel or not",
+        default=False)
     args = parser.parse_args()
 
 
@@ -96,7 +98,7 @@ def main():
             x0_params = x0
             opt = pints.OptimisationController(LL, x0_params, boundaries=bounds, method=pints.CMAES) 
             opt.optimiser().set_population_size(100)
-            opt.set_parallel(True)
+            opt.set_parallel(args.parallel)
             opt.set_log_to_file(txt_folder + 'CMAES_' + iter_str + '.txt')
 
             # Run optimisation

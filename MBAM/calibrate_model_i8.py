@@ -8,6 +8,8 @@ def main():
         default=False)
     parser.add_argument("-p", "--plot", action='store_true', help="whether to show plots or not",
         default=False)
+    parser.add_argument("--parallel", action='store_true', help="whether to perform in parallel or not",
+        default=False)
     args = parser.parse_args()
 
 
@@ -94,21 +96,12 @@ def main():
             print('Repeat ' + str(i+1))
             if i < 1:
                 x0_params = x0
-            #     print(x0_params)
-            # x0_perturbed = np.random.normal(1, 1, size=len(x0)) * x0
-            elif i == 1:
-                x0_params = [5.72459615557482301e-02, 9.40303334741822948e-03, 5.77442208336170396e-05, \
-                3.40631140759928863e+00, 3.87689044858536558e-02, 9.02835679183469908e-02, 6.37397231177798257e-02]
-                for j in {1, 2, 3, 6}:
-                    x0_params[j] = np.log(x0_params[j])
-                # print(x0_params)
-
             else:
                 x0_perturbed = np.random.uniform(-12, 1, size=len(x0))
                 x0_params = x0_perturbed
             opt = pints.OptimisationController(LL, x0_params, boundaries=bounds, method=pints.CMAES) 
             # opt.optimiser().set_population_size(100)
-            opt.set_parallel(True)
+            opt.set_parallel(args.parallel)
             opt.set_log_to_file(txt_folder + 'CMAES_' + iter_str + '.txt')
 
             # Run optimisation
