@@ -61,13 +61,15 @@ class DiagnosticPlots(object):
         plt.tight_layout()
 
 
-    def plot_state_vars(self, rhs, para, state_labels=None):
+    def plot_state_vars(self, rhs, para, state_labels=None, normalise=False):
 
         ''' Plot state variables of models for given RHS and parameter set
         '''
 
         times = self.par.obs_times
-        states = rhs(para) #/ np.exp(para[-1]) # Normalise to conductance
+        states = rhs(para) 
+        if normalise:
+            states = states / np.exp(para[-1]) # Normalise to conductance
 
         # Get state labels
         if state_labels is None:
@@ -95,7 +97,7 @@ class DiagnosticPlots(object):
         plt.tight_layout()
 
 
-    def plot_state_vars_pairwise(self, rhs, para, s1, s2, state_labels=None):
+    def plot_state_vars_pairwise(self, rhs, para, s1, s2, state_labels=None, normalise=False):
 
         ''' Create pairwise plot of two adjacent states
         '''
@@ -104,7 +106,9 @@ class DiagnosticPlots(object):
         assert abs(s1 - s2) == 1, "States must be adjacent"
 
         times = self.par.obs_times
-        states = rhs(para) #/ np.exp(para[-1]) # Normalise to conductance
+        states = rhs(para)
+        if normalise:
+            states = states / np.exp(para[-1]) # Normalise to conductance
 
         # Get state labels
         if state_labels is None:
@@ -364,13 +368,15 @@ class DiagnosticPlots(object):
         plt.tight_layout()
 
 
-    def state_fluxes(self, rhs, para, voltage_func, rate_func, rates_str, state_labels=None):
+    def state_fluxes(self, rhs, para, voltage_func, rate_func, rates_str, state_labels=None, normalise=False):
 
         ''' Plot state fluxes (function still under construction)
         '''
 
         times = self.par.obs_times
-        states = rhs(para) #/ np.exp(para[-1]) # Normalise to conductance
+        states = rhs(para)
+        if normalise:
+            states = states / np.exp(para[-1]) # Normalise to conductance
 
         # Construct missing state from the others
         state1 = np.zeros(self.par.tmax + 1)
