@@ -9,7 +9,7 @@ It is recommended to install libraries and run this repository's scripts in a vi
 To create such a virtual environment open a terminal and do the following:
 - Clone the repository (`git clone https://github.com/CardiacModelling/model-reduction-manifold-boundaries.git`)
 - Type `cd model-reduction-manifold-boundaries` to navigate inside the repository
-- Set up a virtual environment using `virtualenv --python=python3.7 venv`
+- Set up a virtual environment using `virtualenv --python=python3 venv`
 - Activate the virtual environment using `source venv/bin/activate`
 - Install the required packages by typing `pip install -r requirements.txt`.
 
@@ -24,7 +24,7 @@ All code relevant to the MBAM can be found in the [MBAM](https://github.com/Card
 For each iteration of the MBAM, it is required to compute the geodesic path using the MBAM, and then to calibrate the reduced model. This can be performed by running the corresponding `compute_geodesics_i*.py` and `calibrate_model_i*.py` scripts. For example, to generate the data for the 5th iteration of the MBAM, type
 
 - `python compute_geodesics_i5.py --ssv_threshold 1e-5` to compute the geodesic path
-- `python calibrate_model_i5.py` to calibrate the reduced model which uses parameter values from the end of the geodesic path found in the previous script as the starting point (the `--parallel` flag can be used on non-Windows machines to speed up fitting considerably)
+- `python calibrate_model_i5.py` to calibrate the reduced model which uses parameter values from the end of the geodesic path found in the previous script as the starting point
 
 Exact input settings used to generate the data in the manuscript can be found in `input_settings_i*.csv` files in [MBAM/txt_files/](https://github.com/CardiacModelling/model-reduction-manifold-boundaries/tree/main/MBAM/txt_files) folder.
 
