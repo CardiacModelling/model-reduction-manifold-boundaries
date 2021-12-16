@@ -1,5 +1,25 @@
+import os
+import numpy as np
+import sympy as sp
+import symengine as se
+import pints
+import argparse
 
-def main():
+from lib.settings import Params
+from lib.sensitivity_equations import GetSensitivityEquations, GetSymbols
+from lib.diagnostic_plots import DiagnosticPlots
+from lib.likelihood import LogLikelihood, compute_eMRMS, evaluate_cost_function
+import lib.boundaries as boundaries
+
+if __name__=="__main__":
+
+    import platform
+    parallel = True
+    if platform.system() == 'Darwin':
+        import multiprocessing
+        multiprocessing.set_start_method('fork')
+    elif platform.system() == 'Windows':
+        parallel = False
 
     # Check input arguments
     parser = argparse.ArgumentParser(
@@ -7,8 +27,6 @@ def main():
     parser.add_argument("-d", "--done", action='store_true', help="whether geodesic has been done or not",
         default=False)
     parser.add_argument("-p", "--plot", action='store_true', help="whether to show plots or not",
-        default=False)
-    parser.add_argument("--parallel", action='store_true', help="whether to perform in parallel or not",
         default=False)
     args = parser.parse_args()
 
@@ -93,7 +111,7 @@ def main():
         bounds = boundaries.Boundaries(b_rates, par.n_params)
 
         opt = pints.OptimisationController(LL, x0, boundaries=bounds, method=pints.CMAES) 
-        opt.set_parallel(args.parallel)
+        opt.set_parallel(parallel)
         opt.set_log_to_file(txt_folder + 'CMAES_' + iter_str + '.txt')
 
         # Run optimisation
@@ -115,21 +133,4 @@ def main():
         plot.obs_points(para_new, funcs.voltage, I_data=I_data, compare_model_outputs=True, title_str='After calibration')
         plot.plot_state_vars(funcs.rhs_full, para_new, state_labels=states)
         plot.show()
-
-if __name__=="__main__":
-
-    import os
-    import numpy as np
-    import sympy as sp
-    import symengine as se
-    import pints
-    import argparse
-
-    from lib.settings import Params
-    from lib.sensitivity_equations import GetSensitivityEquations, GetSymbols
-    from lib.diagnostic_plots import DiagnosticPlots
-    from lib.likelihood import LogLikelihood, compute_eMRMS, evaluate_cost_function
-    import lib.boundaries as boundaries
-    
-    main()
 
