@@ -1,0 +1,7 @@
+pip>=21.2.4
+sympy==1.8
+matplotlib>=3.4.3
+symengine==0.7.0
+scipy>=1.7.1
+-e git+git://github.com/pints-team/pints.git#egg=pints
+myokit==1.31.0
