@@ -1,0 +1,128 @@
+[[model]]
+name: Wang-1997-IKr
+author: Dominic Whittaker
+# Initial values
+ikr.c2 = 0
+ikr.c3 = 0
+ikr.o = 0
+ikr.i = 0
+
+#
+# Simulation engine variables
+#
+[engine]
+time = 0 bind time
+pace = 0 bind pace
+
+#
+# Membrane potential
+#
+[membrane]
+V = engine.pace
+    desc: membane potential
+    in [mV]
+
+[nernst]
+EK = -88 [mV]
+#EK = (R*(T+273.15)/F)*log(Ko/Ki) in [mV]
+#T = 25
+#R = 8314
+#F = 96485
+#Ko = 5
+#Ki = 120
+
+[misc]
+n_params = 15
+LJP = 4.5
+
+[ikr]
+use membrane.V
+IKr = g * o * (V - nernst.EK)
+
+dot(c2) = k21 * c3 + k51 * c1 - (k12 + k15) * c2
+dot(c3) = k32 * o + k12 * c2 - (k23 + k21) * c3
+dot(o) = k43 * i + k23 * c3 - (k34 + k32) * o
+dot(i) = k34 * o - k43 * i
+c1 = 1 - c2 - c3 - o - i
+
+k51 = p11 * exp(p12 * V)
+k15 = p13 * exp(-p14 * V)
+    
+k23 = p1 * exp(p2 * V)
+k32 = p3 * exp(-p4 * V)
+    
+k12 = p5
+k21 = p6
+    
+k34 = p7 * exp(p8 * V)
+k43 = p9 * exp(-p10 * V)
+
+p1 = 0.0137330000000000	[1/ms]
+p2 = 0.0381980000000000	[1/mV]
+p3 = 6.89000000000000e-05 [1/ms]
+p4 = 0.0417800000000000	[1/mV]
+p5 = 0.0237610000000000	[1/ms]
+p6 = 0.0367780000000000	[1/ms]
+p7 = 0.0908210000000000	[1/ms]
+p8 = 0.0233910000000000	[1/mV]
+p9 = 0.00649700000000000 [1/ms]
+p10 = 0.0326800000000000 [1/mV]
+p11 = 0.0223480000000000 [1/ms]	
+p12 = 0.0117600000000000 [1/mV]
+p13 = 0.0470020000000000 [1/ms]	
+p14 = 0.0631000000000000 [1/mV]	
+p15 = 0.100000000000000 [uS]
+
+g = p15
+
+[[script]]
+import myokit
+import myokit.pacing as pacing
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as pl
+
+#
+# Simple IKr test script
+#
+
+# Get model
+m = get_model()
+
+# Create pacing protocol
+v = np.arange(-100, 50 + 10, 10)
+p = pacing.steptrain(
+        vsteps=v,
+        vhold=-80,
+        tpre=2000,
+        tstep=5000,
+        tpost=3000)
+
+d = [
+    'engine.time',
+    'membrane.V',
+    'ikr.IKr',
+    ]
+
+# Run simulation
+s = myokit.Simulation(m, p)
+s.set_tolerance(1e-8, 1e-8)
+s.set_max_step_size(0.1)
+d = s.run(p.characteristic_time(), log=d)
+
+# Create colormap for plotting
+cmap = matplotlib.cm.get_cmap('viridis')
+norm = matplotlib.colors.Normalize(0, len(v))
+
+# Plot data as overlapping steps
+d2 = d.npview()
+d2 = d2.regularize(0.5)
+d2 = d2.fold(10000)
+pl.figure()
+for k in xrange(len(v)):
+    pl.subplot(2,1,1)
+    pl.plot(d2.time(), d2['membrane.V', k], color=cmap(norm(k)))
+    pl.subplot(2,1,2)
+    pl.plot(d2.time(), d2['ikr.IKr', k], color=cmap(norm(k)))
+pl.show()
+

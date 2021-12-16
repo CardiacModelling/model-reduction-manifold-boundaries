@@ -1,0 +1,123 @@
+[[model]]
+name: Wang-1997-IKr
+author: Dominic Whittaker
+# Initial values
+ikr.o = 0
+
+#
+# Simulation engine variables
+#
+[engine]
+time = 0 bind time
+pace = 0 bind pace
+
+#
+# Membrane potential
+#
+[membrane]
+V = engine.pace
+    desc: membane potential
+    in [mV]
+
+[nernst]
+EK = -88 [mV]
+#EK = (R*(T+273.15)/F)*log(Ko/Ki) in [mV]
+#T = 25
+#R = 8314
+#F = 96485
+#Ko = 5
+#Ki = 120
+
+[misc]
+n_params = 7
+LJP = 4.5
+
+[ikr]
+use membrane.V
+IKr = g * (o / (1 + p4 * exp(p5 * V))) * (V - nernst.EK)
+
+dot(o) = C12toO * c12 - OtoC12 * o
+c12 = 1 - o
+
+C12toO = p2 * exp(p6 * V)
+OtoC12 = p3 * exp(-p1 * V) / (1 + p4 * exp(p5 * V))
+
+#p1 = exp(-2.50364943)
+#p2 = exp(-5.18200067)
+#p3 = exp(-12.22746843)
+#p4 = exp(1.01763792)
+#p5 = exp(-3.21819832)
+#p6 = exp(-2.26942385)
+#p7 = exp(-2.90892044)
+
+#p1 = 1.782056381143715118e-01
+#p2 = exp(-5.691780686369689590e-01)
+#p3 = exp(-1.217166316821788996e+01)
+#p4 = exp(2.523786881336178567e+00)
+#p5 = 2.987066814525385361e-02
+#p6 = 9.440535783724612884e-04
+#p7 = exp(-1.795128577844863571e+00)
+
+p1 = 5.72459615557482301e-02
+p2 = 9.40303334741822948e-03
+p3 = 5.77442208336170396e-05
+p4 = 3.40631140759928863e+00
+p5 = 3.87689044858536558e-02
+p6 = 9.02835679183469908e-02
+p7 = 6.37397231177798257e-02
+
+
+g = p7
+
+[[script]]
+import myokit
+import myokit.pacing as pacing
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as pl
+
+#
+# Simple IKr test script
+#
+
+# Get model
+m = get_model()
+
+# Create pacing protocol
+v = np.arange(-100, 50 + 10, 10)
+#p = pacing.steptrain(
+#        vsteps=v,
+#        vhold=-80,
+#        tpre=2000,
+#        tstep=5000,
+#        tpost=3000)
+p = myokit.load_protocol('mini-staircase.mmt')
+
+d = [
+    'engine.time',
+    'membrane.V',
+    'ikr.IKr',
+    ]
+
+# Run simulation
+s = myokit.Simulation(m, p)
+s.set_tolerance(1e-8, 1e-8)
+s.set_max_step_size(0.1)
+d = s.run(p.characteristic_time()-1, log=d)
+
+# Create colormap for plotting
+#cmap = matplotlib.cm.get_cmap('viridis')
+#norm = matplotlib.colors.Normalize(0, len(v))
+
+# Plot data as overlapping steps
+d2 = d.npview()
+d2 = d2.regularize(0.5)
+#d2 = d2.fold(10000)
+pl.figure()
+#for k in xrange(len(v)):
+pl.subplot(2,1,1)
+pl.plot(d2.time(), d2['membrane.V'])
+pl.subplot(2,1,2)
+pl.plot(d2.time(), d2['ikr.IKr'])
+pl.show()
+

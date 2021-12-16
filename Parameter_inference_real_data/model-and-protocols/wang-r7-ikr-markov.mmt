@@ -1,0 +1,110 @@
+[[model]]
+name: Wang-1997-IKr
+author: Dominic Whittaker
+# Initial values
+ikr.o = 0
+ikr.i = 0
+
+#
+# Simulation engine variables
+#
+[engine]
+time = 0 bind time
+pace = 0 bind pace
+
+#
+# Membrane potential
+#
+[membrane]
+V = engine.pace
+    desc: membane potential
+    in [mV]
+
+[nernst]
+EK = -88 [mV]
+#EK = (R*(T+273.15)/F)*log(Ko/Ki) in [mV]
+#T = 25
+#R = 8314
+#F = 96485
+#Ko = 5
+#Ki = 120
+
+[misc]
+n_params = 8
+LJP = 4.5
+
+[ikr]
+use membrane.V
+IKr = g * o * (V - nernst.EK)
+
+dot(o) = C12toO * c12 + ItoO * i - (OtoC12 + OtoI) * o
+dot(i) = OtoI * o - ItoO * i
+c12 = 1 - o - i
+
+C12toO = p2 * exp(p7 * V) 
+OtoC12 = p3 * exp(-p1 * V)
+OtoI = p4 * exp(p5 * V) 
+ItoO = p6
+
+p1 = 5.923305926524011916e-02
+p2 = exp(-4.733041532089968584e+00)
+p3 = exp(-1.002085082799077398e+01)
+p4 = exp(1.250369055245865058e+00)
+p5 = 3.850780139474032499e-02
+p6 = exp(4.363987922099697020e-02)
+p7 = 7.562195788362176263e-02
+p8 = exp(-2.770315950465262134e+00)
+
+g = p8
+
+[[script]]
+import myokit
+import myokit.pacing as pacing
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as pl
+
+#
+# Simple IKr test script
+#
+
+# Get model
+m = get_model()
+
+# Create pacing protocol
+v = np.arange(-100, 50 + 10, 10)
+p = pacing.steptrain(
+        vsteps=v,
+        vhold=-80,
+        tpre=2000,
+        tstep=5000,
+        tpost=3000)
+
+d = [
+    'engine.time',
+    'membrane.V',
+    'ikr.IKr',
+    ]
+
+# Run simulation
+s = myokit.Simulation(m, p)
+s.set_tolerance(1e-8, 1e-8)
+s.set_max_step_size(0.1)
+d = s.run(p.characteristic_time(), log=d)
+
+# Create colormap for plotting
+cmap = matplotlib.cm.get_cmap('viridis')
+norm = matplotlib.colors.Normalize(0, len(v))
+
+# Plot data as overlapping steps
+d2 = d.npview()
+d2 = d2.regularize(0.5)
+d2 = d2.fold(10000)
+pl.figure()
+for k in xrange(len(v)):
+    pl.subplot(2,1,1)
+    pl.plot(d2.time(), d2['membrane.V', k], color=cmap(norm(k)))
+    pl.subplot(2,1,2)
+    pl.plot(d2.time(), d2['ikr.IKr', k], color=cmap(norm(k)))
+pl.show()
+
