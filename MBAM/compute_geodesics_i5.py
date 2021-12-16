@@ -54,7 +54,7 @@ conductance = se.exp(x[10])
 
 rates = [C12toC3, C3toC12, OtoC3, C3toO, ItoO, OtoI]
 rates_str = ['C12toC3', 'C3toC12', 'OtoC3', 'C3toO', 'ItoO', 'OtoI']
-states = ['C12', 'C3', 'O', 'I'] # C12 is calculated from the other states
+states = ["C'", 'C3', 'O', 'I'] # C12 is calculated from the other states
 
 
 rhs = [C12toC3 * (1 - y[0] - y[1] - y[2]) + OtoC3 * y[1] - (C3toC12 + C3toO) * y[0],

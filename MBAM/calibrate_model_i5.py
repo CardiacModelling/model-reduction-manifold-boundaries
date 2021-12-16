@@ -51,7 +51,7 @@ def main():
     conductance = se.exp(x[9]) / (1 + se.exp(x[0]) * se.exp(-x[1] * v))
 
     rates = [C12toO, OtoC12, OtoI, ItoO]
-    states = ['C12', 'O', 'I'] # C12 is calculated from the other states
+    states = ["C'", 'O', 'I'] # C12 is calculated from the other states
 
 
     rhs = [-(OtoC12 + OtoI) * y[0] + C12toO * (1 - y[0] - y[1]) + ItoO * y[1],
