@@ -1,8 +1,8 @@
 # Model reduction using manifold boundaries
 
-This repository contains scripts for ion channel model reduction using the manifold boundary approximation method and parameter inference using [Myokit](http://myokit.org) and [PINTS](https://github.com/pints-team/pints) modules in Python. This code is associated with the paper:
+This repository contains scripts for ion channel model reduction using the manifold boundary approximation method (MBAM) and parameter inference using [Myokit](http://myokit.org) and [PINTS](https://github.com/pints-team/pints) modules in Python. This code is associated with the paper:
 
-***"Ion channel model reduction using manifold boundaries".*** (In preparation). Whittaker, D. G., Wang, J., Shuttleworth J., Venkateshappa, R., Claydon, T. W., Mirams, G. R.
+***"Ion channel model reduction using manifold boundaries".*** (In preparation). Whittaker, D. G., Wang, J., Shuttleworth, J., Venkateshappa, R., Claydon, T. W., Mirams, G. R.
 
 ## Prerequisites
 It is recommended to install libraries and run this repository's scripts in a virtual environment to avoid version conflicts between different projects.
@@ -41,20 +41,21 @@ The Michaelis Menten reaction kinetics "toy model" can be found in [MBAM/toy_mod
 
 ## Parameter inference using real data
 
-All code parameter inference using real experimental data can be found in the [Parameter_inference_real_data](https://github.com/CardiacModelling/model-reduction-manifold-boundaries/tree/main/Parameter_inference_real_data) folder.
+All code for parameter inference using real experimental data can be found in the [Parameter_inference_real_data](https://github.com/CardiacModelling/model-reduction-manifold-boundaries/tree/main/Parameter_inference_real_data) folder.
 
 ### Generating data
 
+To fit a model to experimental data simply type `python cmaesfit_iid_noise.py --model [MODEL NAME]` where `[MODEL NAME]` can be one of `wang`, `wang-r1`, `wang-r2`, `wang-r3`, `wang-r4`, `wang-r5`, `wang-r6`, `wang-r7`, `wang-r8`. For example, `python cmaesfit_iid_noise.py --model wang --repeats 50` to fit parameters of the original Wang model using 50 "repeats" or initial guesses, or `python cmaesfit_iid_noise.py --model wang-r5` to fit parameters of the reduced, Wang-r5 model.
+
 ### Visualising data
+
+To visualise inferred parameters, in the [Parameter_inference_real_data/cmaesfits/](https://github.com/CardiacModelling/model-reduction-manifold-boundaries/tree/main/Parameter_inference_real_data/cmaesfits) folder type `python plot_params.py --model [MODEL NAME]`, e.g. `python plot_params.py --model wang` for the full Wang model. Adding the `--show` input argument will print figures to screen rather than saving them to file.
+
+To visualise fits of the model to a voltage clamp protocol, in the [Parameter_inference_real_data/figures/](https://github.com/CardiacModelling/model-reduction-manifold-boundaries/tree/main/Parameter_inference_real_data/figures) folder simply type `python plot-[PROTOCOL NAME].py --model [MODEL NAME]` where `[PROTOCOL NAME]` can be one of `activation`, `inactivation`, `complex-ap`, `staircase`. For example, to visualise the fit of the Wang model to the staircase protocol data, simply type `python plot_staircase.py --model wang`. Again, adding the `--show` input argument will print figures to screen rather than saving them to file.
 
 ## Acknowledging this work
 
 If you publish any work based on the contents of this repository please cite (PLACEHOLDER):
-
-Kemp, J. M., Whittaker, D. G., Venkateshappa, R., Pang, Z., Johal, R., Sergeev, V., Tibbits, G. F., Mirams, G. R., Claydon, T. W.
-(2021).
-[Electrophysiological characterization of the hERG R56Q LQTS variant and targeted rescue by the activator RPR260243](https://doi.org/10.1085/jgp.202112923).
-_Journal of General Physiology_ 153 (10): e202112923.
 
 ### Related publications
 
