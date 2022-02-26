@@ -135,7 +135,7 @@ if args.plot:
     geodesic_velocities = np.loadtxt(txt_folder + 'geodesic_velocities_' + iter_str + '.txt')
 
     plot.plot_state_vars(funcs.rhs_full, geodesic_paths[-1], state_labels=states)
-    plot.eigenvals(geodesic_velocities)
+    plot.eigenvals(geodesic_velocities, grid=False, figx=6, figy=3)
     plot.geodesics(geodesic_taus, geodesic_paths, geodesic_velocities)
     plot.obs_points(geodesic_paths[-1], funcs.voltage, I_data=np.loadtxt(txt_folder + 'current_i1.txt'))
     if args.show_rates:

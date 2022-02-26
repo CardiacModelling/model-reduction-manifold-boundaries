@@ -132,7 +132,7 @@ if args.plot:
     geodesic_velocities = np.loadtxt(txt_folder + 'geodesic_velocities_' + iter_str + '.txt')
 
     plot.plot_state_vars(funcs.rhs_full, geodesic_paths[-1], state_labels=states)
-    plot.eigenvals(geodesic_velocities)
+    plot.eigenvals(geodesic_velocities, grid=False, figx=6, figy=3)
     plot.geodesics(geodesic_taus, geodesic_paths, geodesic_velocities)
     # plot.geodesics_2D_contour_plot(funcs.rhs_obs_vector, geodesic_paths, 5, 11, xlims=[-4, 3], ylims=[-2, 4], \
     #     figx=3, figy=2.5)
