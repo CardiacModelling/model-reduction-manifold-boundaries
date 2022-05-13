@@ -11,6 +11,7 @@ import sys
 
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes, inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 
 # Load project modules
 sys.path.append(os.path.abspath(os.path.join('../', 'python')))
@@ -41,6 +42,15 @@ parser.add_argument("--grid", action='store_true',
 args = parser.parse_args()
 
 cell = args.cell
+
+def add_sizebar(ax, size, loc):
+    asb = AnchoredSizeBar(ax.transData,
+                          size,
+                          str(size) + ' ms',
+                          loc=loc,
+                          pad=0.1, borderpad=0.5, sep=5,
+                          frameon=False)
+    ax.add_artist(asb)
 
 #
 # Simple IKr test script
@@ -101,6 +111,9 @@ pl.yticks(visible=False)
 pl.xticks(visible=False)
 mark_inset(a1, axins3, loc1=2, loc2=1, fc="none", ec="0.5")
 
+add_sizebar(axins, 200, 'lower center')
+add_sizebar(axins2, 5, 'center left')
+add_sizebar(axins3, 200, 'upper right')
 
 e = myokit.DataLog.load_csv('../data/SFU-data/AP/complex-AP-WT-cell-' + str(cell) + '.csv').npview()
 

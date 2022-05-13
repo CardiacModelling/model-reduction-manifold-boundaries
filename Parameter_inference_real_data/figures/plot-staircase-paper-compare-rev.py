@@ -39,6 +39,15 @@ args = parser.parse_args()
 
 cell = args.cell
 
+def add_sizebar(ax, size, loc):
+    asb = AnchoredSizeBar(ax.transData,
+                          size,
+                          str(size) + ' ms',
+                          loc=loc,
+                          pad=0.1, borderpad=0.5, sep=5,
+                          frameon=False)
+    ax.add_artist(asb)
+
 #
 # Simple IKr test script
 #
@@ -98,17 +107,7 @@ pl.yticks(visible=False)
 pl.xticks(visible=False)
 mark_inset(a1, axins3, loc1=2, loc2=1, fc="none", ec="0.5")
 
-def add_sizebar(ax, size, loc):
-    asb = AnchoredSizeBar(ax.transData,
-                          size,
-                          str(size) + ' ms',
-                          loc=loc,
-                          pad=0.1, borderpad=0.5, sep=5,
-                          frameon=False)
-    ax.add_artist(asb)
-
-# add_sizebar(a1, 50)
-add_sizebar(axins1, 20, 'lower center')
+add_sizebar(axins1, 20, 'lower right')
 add_sizebar(axins2, 500, 'lower right')
 add_sizebar(axins3, 10, 'center right')
 
