@@ -2,7 +2,7 @@
 
 This repository contains scripts for ion channel model reduction using the manifold boundary approximation method (MBAM) and parameter inference using [Myokit](http://myokit.org) and [PINTS](https://github.com/pints-team/pints) modules in Python. This code is associated with the paper:
 
-***"Ion channel model reduction using manifold boundaries".*** *Royal Society Interface*. Whittaker, D. G., Wang, J., Shuttleworth, J. G., Venkateshappa, R., Kemp, J. M., Claydon, T. W., Mirams, G. R. (2022)
+***"Ion channel model reduction using manifold boundaries".*** *Royal Society Interface*. Whittaker, D.G., Wang, J., Shuttleworth, J.G., Venkateshappa, R., Kemp, J.M., Claydon, T.W., Mirams, G.R. (2022)
 
 ## Prerequisites
 It is recommended to install libraries and run this repository's scripts in a virtual environment to avoid version conflicts between different projects.
@@ -55,7 +55,8 @@ To visualise fits of the model to a voltage clamp protocol, in the [Parameter_in
 
 ## Acknowledging this work
 
-If you publish any work based on the contents of this repository please cite (PLACEHOLDER):
+If you publish any work based on the contents of this repository please cite:  
+***"Ion channel model reduction using manifold boundaries".*** *Royal Society Interface*. Whittaker, D.G., Wang, J., Shuttleworth, J.G., Venkateshappa, R., Kemp, J.M., Claydon, T.W., Mirams, G.R. (2022)
 
 ### Related publications
 
